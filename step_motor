@@ -1,0 +1,120 @@
+const int bobin1 = 8;
+const int bobin2 = 9;
+const int bobin3 = 10;
+const int bobin4 = 11;
+
+int potPin=A0;
+int potVal;
+
+boolean state=0;//sistemin çalışıp çalışmama durumu
+int stopButtonPin=7;
+boolean stopButtonValue;
+int startButtonPin=5;
+boolean startButtonValue;
+
+int kirmiziLed=2;
+int yesilLed=3;
+
+
+void adim1(){
+  potVal=analogRead(potPin);
+  potVal=map(potVal,0,1023,1,100);
+  digitalWrite(bobin1,HIGH);
+  digitalWrite(bobin2,LOW);
+  digitalWrite(bobin3,LOW);
+  digitalWrite(bobin4,LOW);
+  delay(potVal);
+}
+
+void adim2(){
+  potVal=analogRead(potPin);
+  potVal=map(potVal,0,1023,1,100);
+  digitalWrite(bobin1,LOW);
+  digitalWrite(bobin2,HIGH);
+  digitalWrite(bobin3,LOW);
+  digitalWrite(bobin4,LOW);
+  delay(potVal);
+}
+
+void adim3(){
+  potVal=analogRead(potPin);
+  potVal=map(potVal,0,1023,1,100);
+  digitalWrite(bobin1,LOW);
+  digitalWrite(bobin2,LOW);
+  digitalWrite(bobin3,HIGH);
+  digitalWrite(bobin4,LOW);
+  delay(potVal);
+}
+
+void adim4(){
+  potVal=analogRead(potPin);
+  potVal=map(potVal,0,1023,1,100);
+  digitalWrite(bobin1,LOW);
+  digitalWrite(bobin2,LOW);
+  digitalWrite(bobin3,LOW);
+  digitalWrite(bobin4,HIGH);
+  delay(potVal);
+}
+
+void sagaDon(){
+  startButton();
+  while(state==1){
+    adim1();
+    stopButton();
+    adim2();
+    stopButton();
+    adim3();
+    stopButton();
+    adim4();
+    stopButton();
+  }
+}
+
+void solaDon(){
+  startButton();
+  while(state==1){
+    adim4();
+    stopButton();
+    adim3();
+    stopButton();
+    adim2();
+    stopButton();
+    adim1();
+    stopButton();
+  }
+}
+
+void stopButton(){
+  stopButtonValue=digitalRead(stopButtonPin);
+  if(stopButtonValue==1 && state==1){
+    state=0;
+    digitalWrite(yesilLed,LOW);
+    digitalWrite(kirmiziLed,HIGH);
+  }
+}
+void startButton(){
+  startButtonValue=digitalRead(startButtonPin);
+  if(startButtonValue==1 && state==0){
+    state=1;
+    digitalWrite(kirmiziLed,LOW);
+    digitalWrite(yesilLed,HIGH);
+  }
+}
+
+
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(bobin1,OUTPUT);
+  pinMode(bobin2,OUTPUT);
+  pinMode(bobin3,OUTPUT);
+  pinMode(bobin4,OUTPUT);
+
+  pinMode(kirmiziLed,OUTPUT);
+  pinMode(yesilLed,OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  sagaDon();
+}
