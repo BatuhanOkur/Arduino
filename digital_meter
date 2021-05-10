@@ -1,0 +1,74 @@
+#include <LiquidCrystal.h>
+
+int trigPin=7;
+int echoPin=6;
+int sure,uzaklik;
+int minRange=5;
+int buzzerPin=8;
+int ledPin=9;
+
+int rs=12,en=11,d4=5,d5=4,d6=3,d7=2;
+LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(trigPin,OUTPUT);
+  pinMode(echoPin,INPUT);
+  pinMode(buzzerPin,OUTPUT);
+  pinMode(ledPin,OUTPUT);
+  lcd.begin(16,2);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(trigPin,LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigPin,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin,LOW);
+
+  sure = pulseIn(echoPin,HIGH,11600);
+  uzaklik = sure*0.0345/2;
+
+  delay(250);
+  lcdYaz();
+  melodi(uzaklik*10);
+  if(uzaklik<=5){
+    digitalWrite(ledPin,HIGH);
+    delay(uzaklik*100);
+    digitalWrite(ledPin,LOW);
+    delay(uzaklik*100);    
+  }
+}
+
+void lcdYaz(){
+  if(uzaklik > minRange){
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Uzaklik:");
+    lcd.setCursor(0,1);
+    lcd.print(uzaklik);
+    lcd.print("cm");
+  }
+  else{
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Tehlike!!");
+    lcd.setCursor(0,1);
+    lcd.print(uzaklik);
+    lcd.print("cm");
+  }
+
+}
+
+int melodi(int dly){
+  if(dly <= 50){
+    tone(buzzerPin,440);
+    delay(dly);
+    noTone(buzzerPin);
+    delay(dly);
+  }
+  
+}
+
+
+
